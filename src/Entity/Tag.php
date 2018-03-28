@@ -2,11 +2,23 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ApiResource(
+ *   collectionOperations={
+ *     "get"={"method"="GET"},
+ *     "post"={"method"="POST"},
+ *   },
+ *   itemOperations={
+ *     "get"={"method"="GET"},
+ *     "put"={"method"="PUT"},
+ *   }
+ * )
+ *
  * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
  */
 class Tag
