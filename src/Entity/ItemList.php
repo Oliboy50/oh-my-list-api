@@ -41,19 +41,19 @@ class ItemList
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Item", inversedBy="itemLists")
-     */
-    private $items;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="itemLists")
      */
     private $tags;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="itemList", orphanRemoval=true)
+     */
+    private $positions;
+
     public function __construct()
     {
-        $this->items = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->positions = new ArrayCollection();
     }
 
     public function getId()
@@ -86,32 +86,6 @@ class ItemList
     }
 
     /**
-     * @return Collection|Item[]
-     */
-    public function getItems(): Collection
-    {
-        return $this->items;
-    }
-
-    public function addItem(Item $item): self
-    {
-        if (!$this->items->contains($item)) {
-            $this->items[] = $item;
-        }
-
-        return $this;
-    }
-
-    public function removeItem(Item $item): self
-    {
-        if ($this->items->contains($item)) {
-            $this->items->removeElement($item);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Tag[]
      */
     public function getTags(): Collection
@@ -132,6 +106,37 @@ class ItemList
     {
         if ($this->tags->contains($tag)) {
             $this->tags->removeElement($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Position[]
+     */
+    public function getPositions(): Collection
+    {
+        return $this->positions;
+    }
+
+    public function addPosition(Position $position): self
+    {
+        if (!$this->positions->contains($position)) {
+            $this->positions[] = $position;
+            $position->setItemList($this);
+        }
+
+        return $this;
+    }
+
+    public function removePosition(Position $position): self
+    {
+        if ($this->positions->contains($position)) {
+            $this->positions->removeElement($position);
+            // set the owning side to null (unless already changed)
+            if ($position->getItemList() === $this) {
+                $position->setItemList(null);
+            }
         }
 
         return $this;

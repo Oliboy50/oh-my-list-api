@@ -51,14 +51,14 @@ class Item
     private $tags;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\ItemList", mappedBy="items")
+     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="item", orphanRemoval=true)
      */
-    private $itemLists;
+    private $positions;
 
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-        $this->itemLists = new ArrayCollection();
+        $this->positions = new ArrayCollection();
     }
 
     public function getId()
@@ -129,28 +129,31 @@ class Item
     }
 
     /**
-     * @return Collection|ItemList[]
+     * @return Collection|Position[]
      */
-    public function getItemLists(): Collection
+    public function getPositions(): Collection
     {
-        return $this->itemLists;
+        return $this->positions;
     }
 
-    public function addItemList(ItemList $itemList): self
+    public function addPosition(Position $position): self
     {
-        if (!$this->itemLists->contains($itemList)) {
-            $this->itemLists[] = $itemList;
-            $itemList->addItem($this);
+        if (!$this->positions->contains($position)) {
+            $this->positions[] = $position;
+            $position->setItem($this);
         }
 
         return $this;
     }
 
-    public function removeItemList(ItemList $itemList): self
+    public function removePosition(Position $position): self
     {
-        if ($this->itemLists->contains($itemList)) {
-            $this->itemLists->removeElement($itemList);
-            $itemList->removeItem($this);
+        if ($this->positions->contains($position)) {
+            $this->positions->removeElement($position);
+            // set the owning side to null (unless already changed)
+            if ($position->getItem() === $this) {
+                $position->setItem(null);
+            }
         }
 
         return $this;
