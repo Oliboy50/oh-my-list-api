@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -20,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
  * )
  *
  * @ORM\Entity(repositoryClass="App\Repository\ItemRepository")
+ *
+ * @UniqueEntity("label")
  */
 class Item
 {
@@ -32,6 +36,8 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $label;
 
