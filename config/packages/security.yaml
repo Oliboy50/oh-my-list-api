@@ -4,7 +4,7 @@ security:
             algorithm: bcrypt
 
     providers:
-        database_provider:
+        entity_provider:
             entity:
                 class: App\Entity\User
                 property: email
@@ -25,7 +25,6 @@ security:
             pattern:   ^/api
             stateless: true
             anonymous: true
-            provider: database_provider
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
