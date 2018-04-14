@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -53,6 +55,16 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="boolean")
      */
     private $isActive = true;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ItemList", mappedBy="owner")
+     */
+    private $itemLists;
+
+    public function __construct()
+    {
+        $this->itemLists = new ArrayCollection();
+    }
 
     public function getUsername()
     {
@@ -122,6 +134,37 @@ class User implements UserInterface, \Serializable
     public function setActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ItemList[]
+     */
+    public function getItemLists(): Collection
+    {
+        return $this->itemLists;
+    }
+
+    public function addItemList(ItemList $itemList): self
+    {
+        if (!$this->itemLists->contains($itemList)) {
+            $this->itemLists[] = $itemList;
+            $itemList->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItemList(ItemList $itemList): self
+    {
+        if ($this->itemLists->contains($itemList)) {
+            $this->itemLists->removeElement($itemList);
+            // set the owning side to null (unless already changed)
+            if ($itemList->getOwner() === $this) {
+                $itemList->setOwner(null);
+            }
+        }
 
         return $this;
     }

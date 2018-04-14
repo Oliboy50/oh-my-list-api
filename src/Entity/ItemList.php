@@ -56,6 +56,12 @@ class ItemList
      */
     private $positions;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="itemLists")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -144,6 +150,18 @@ class ItemList
                 $position->setItemList(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }
