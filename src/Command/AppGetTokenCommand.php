@@ -43,6 +43,10 @@ class AppGetTokenCommand extends Command
 
         $token = $this->tokenManager->create($user);
 
-        echo $token . PHP_EOL;
+        $output->writeln([
+            '',
+            '<info>'.$token.'</info>',
+            '',
+        ]);
     }
 }

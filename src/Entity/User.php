@@ -31,6 +31,9 @@ class User implements UserInterface, \Serializable
 {
     use TimestampableEntity;
 
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_USER = 'ROLE_USER';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -55,6 +58,11 @@ class User implements UserInterface, \Serializable
     private $password;
 
     /**
+     * @ORM\Column(type="array")
+     */
+    private $roles;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $isActive = true;
@@ -67,6 +75,7 @@ class User implements UserInterface, \Serializable
     public function __construct()
     {
         $this->itemLists = new ArrayCollection();
+        $this->roles = [self::ROLE_USER];
     }
 
     public function getUsername()
@@ -86,7 +95,7 @@ class User implements UserInterface, \Serializable
 
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        return $this->roles;
     }
 
     public function eraseCredentials()
@@ -125,6 +134,13 @@ class User implements UserInterface, \Serializable
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }

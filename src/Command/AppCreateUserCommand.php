@@ -56,7 +56,7 @@ class AppCreateUserCommand extends Command
         }
 
         // persist user
-        $this->em->persist($user);
+        $this->em->persist($user->setRoles(['ROLE_ADMIN']));
         $this->em->flush();
 
         $io->success(sprintf('User [%s] is now ready to get its first JWT token!', $email));
