@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -41,16 +42,22 @@ class Item
      * @ORM\Column(type="string", length=255)
      *
      * @Assert\NotBlank()
+     *
+     * @Groups("Listitem_denormalization_post")
      */
     private $label;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
+     *
+     * @Groups("Listitem_denormalization_post")
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=510, nullable=true)
+     *
+     * @Groups("Listitem_denormalization_post")
      */
     private $image;
 
@@ -64,10 +71,18 @@ class Item
      */
     private $positions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ItemUser", mappedBy="item", orphanRemoval=true, cascade={"persist"})
+     *
+     * @Groups("Listitem_denormalization_post")
+     */
+    private $itemUsers;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->positions = new ArrayCollection();
+        $this->itemUsers = new ArrayCollection();
     }
 
     public function getId()
@@ -162,6 +177,37 @@ class Item
             // set the owning side to null (unless already changed)
             if ($position->getItem() === $this) {
                 $position->setItem(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ItemUser[]
+     */
+    public function getItemUsers(): Collection
+    {
+        return $this->itemUsers;
+    }
+
+    public function addItemUser(ItemUser $itemUser): self
+    {
+        if (!$this->itemUsers->contains($itemUser)) {
+            $this->itemUsers[] = $itemUser;
+            $itemUser->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItemUser(ItemUser $itemUser): self
+    {
+        if ($this->itemUsers->contains($itemUser)) {
+            $this->itemUsers->removeElement($itemUser);
+            // set the owning side to null (unless already changed)
+            if ($itemUser->getItem() === $this) {
+                $itemUser->setItem(null);
             }
         }
 

@@ -8,25 +8,32 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
  *   collectionOperations={
  *     "get"={"method"="GET"},
- *     "post"={"method"="POST"},
+ *     "post"={
+ *       "method"="POST",
+ *       "denormalization_context"={"groups"={"Listitem_denormalization_post"}},
+ *     },
  *   },
  *   itemOperations={
  *     "get"={"method"="GET"},
- *     "put"={"method"="PUT"},
+ *     "put"={
+ *       "method"="PUT",
+ *       "denormalization_context"={"groups"={"Listitem_denormalization_put"}},
+ *     },
  *   }
  * )
  *
- * @ORM\Entity(repositoryClass="App\Repository\ItemListRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ListitemRepository")
  *
- * @UniqueEntity("label")
+ * @UniqueEntity(fields={"label", "owner"})
  */
-class ItemList
+class Listitem
 {
     use TimestampableEntity;
 
@@ -41,27 +48,38 @@ class ItemList
      * @ORM\Column(type="string", length=255)
      *
      * @Assert\NotBlank()
+     *
+     * @Groups("Listitem_denormalization_post")
+     * @Groups("Listitem_denormalization_put")
      */
     private $label;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
+     *
+     * @Groups("Listitem_denormalization_post")
+     * @Groups("Listitem_denormalization_put")
      */
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="itemLists")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="listitems")
      */
     private $tags;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="itemList", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="listitem", orphanRemoval=true, cascade={"persist"})
+     *
+     * @Groups("Listitem_denormalization_post")
+     * @Groups("Listitem_denormalization_put")
      */
     private $positions;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="itemLists")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="listitems")
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @Groups("Listitem_denormalization_post")
      */
     private $owner;
 
@@ -138,7 +156,7 @@ class ItemList
     {
         if (!$this->positions->contains($position)) {
             $this->positions[] = $position;
-            $position->setItemList($this);
+            $position->setListitem($this);
         }
 
         return $this;
@@ -149,8 +167,8 @@ class ItemList
         if ($this->positions->contains($position)) {
             $this->positions->removeElement($position);
             // set the owning side to null (unless already changed)
-            if ($position->getItemList() === $this) {
-                $position->setItemList(null);
+            if ($position->getListitem() === $this) {
+                $position->setListitem(null);
             }
         }
 

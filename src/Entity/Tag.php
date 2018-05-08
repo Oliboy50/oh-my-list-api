@@ -57,14 +57,14 @@ class Tag
     private $items;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\ItemList", mappedBy="tags")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Listitem", mappedBy="tags")
      */
-    private $itemLists;
+    private $listitems;
 
     public function __construct()
     {
         $this->items = new ArrayCollection();
-        $this->itemLists = new ArrayCollection();
+        $this->listitems = new ArrayCollection();
     }
 
     public function getId()
@@ -125,28 +125,28 @@ class Tag
     }
 
     /**
-     * @return Collection|ItemList[]
+     * @return Collection|Listitem[]
      */
-    public function getItemLists(): Collection
+    public function getListitems(): Collection
     {
-        return $this->itemLists;
+        return $this->listitems;
     }
 
-    public function addItemList(ItemList $itemList): self
+    public function addListitem(Listitem $listitem): self
     {
-        if (!$this->itemLists->contains($itemList)) {
-            $this->itemLists[] = $itemList;
-            $itemList->addTag($this);
+        if (!$this->listitems->contains($listitem)) {
+            $this->listitems[] = $listitem;
+            $listitem->addTag($this);
         }
 
         return $this;
     }
 
-    public function removeItemList(ItemList $itemList): self
+    public function removeListitem(Listitem $listitem): self
     {
-        if ($this->itemLists->contains($itemList)) {
-            $this->itemLists->removeElement($itemList);
-            $itemList->removeTag($this);
+        if ($this->listitems->contains($listitem)) {
+            $this->listitems->removeElement($listitem);
+            $listitem->removeTag($this);
         }
 
         return $this;

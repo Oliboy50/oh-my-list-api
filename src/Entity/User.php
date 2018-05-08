@@ -68,14 +68,20 @@ class User implements UserInterface, \Serializable
     private $isActive = true;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ItemList", mappedBy="owner")
+     * @ORM\OneToMany(targetEntity="App\Entity\Listitem", mappedBy="owner")
      */
-    private $itemLists;
+    private $listitems;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ItemUser", mappedBy="user", orphanRemoval=true)
+     */
+    private $itemUsers;
 
     public function __construct()
     {
-        $this->itemLists = new ArrayCollection();
+        $this->listitems = new ArrayCollection();
         $this->roles = [self::ROLE_USER];
+        $this->itemUsers = new ArrayCollection();
     }
 
     public function getUsername()
@@ -158,30 +164,61 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return Collection|ItemList[]
+     * @return Collection|Listitem[]
      */
-    public function getItemLists(): Collection
+    public function getListitems(): Collection
     {
-        return $this->itemLists;
+        return $this->listitems;
     }
 
-    public function addItemList(ItemList $itemList): self
+    public function addListitem(Listitem $listitem): self
     {
-        if (!$this->itemLists->contains($itemList)) {
-            $this->itemLists[] = $itemList;
-            $itemList->setOwner($this);
+        if (!$this->listitems->contains($listitem)) {
+            $this->listitems[] = $listitem;
+            $listitem->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeItemList(ItemList $itemList): self
+    public function removeListitem(Listitem $listitem): self
     {
-        if ($this->itemLists->contains($itemList)) {
-            $this->itemLists->removeElement($itemList);
+        if ($this->listitems->contains($listitem)) {
+            $this->listitems->removeElement($listitem);
             // set the owning side to null (unless already changed)
-            if ($itemList->getOwner() === $this) {
-                $itemList->setOwner(null);
+            if ($listitem->getOwner() === $this) {
+                $listitem->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ItemUser[]
+     */
+    public function getItemUsers(): Collection
+    {
+        return $this->itemUsers;
+    }
+
+    public function addItemUser(ItemUser $itemUser): self
+    {
+        if (!$this->itemUsers->contains($itemUser)) {
+            $this->itemUsers[] = $itemUser;
+            $itemUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItemUser(ItemUser $itemUser): self
+    {
+        if ($this->itemUsers->contains($itemUser)) {
+            $this->itemUsers->removeElement($itemUser);
+            // set the owning side to null (unless already changed)
+            if ($itemUser->getUser() === $this) {
+                $itemUser->setUser(null);
             }
         }
 

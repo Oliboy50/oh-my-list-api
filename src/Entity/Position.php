@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,13 +16,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   },
  *   itemOperations={
  *     "get"={"method"="GET"},
- *     "put"={"method"="PUT"},
  *   }
  * )
  *
  * @ORM\Entity(repositoryClass="App\Repository\PositionRepository")
  *
- * @UniqueEntity(fields={"item", "itemList"})
+ * @UniqueEntity(fields={"item", "listitem"})
+ * @UniqueEntity(fields={"listitem", "position"})
  */
 class Position
 {
@@ -35,31 +36,40 @@ class Position
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="positions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="positions", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      *
      * @Assert\NotNull()
+     *
+     * @Groups("Listitem_denormalization_post")
+     * @Groups("Listitem_denormalization_put")
      */
     private $item;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ItemList", inversedBy="positions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Listitem", inversedBy="positions")
      * @ORM\JoinColumn(nullable=false)
      *
      * @Assert\NotNull()
      */
-    private $itemList;
+    private $listitem;
 
     /**
      * @ORM\Column(type="integer")
      *
      * @Assert\NotBlank()
      * @Assert\GreaterThan(0)
+     *
+     * @Groups("Listitem_denormalization_post")
+     * @Groups("Listitem_denormalization_put")
      */
     private $position;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
+     *
+     * @Groups("Listitem_denormalization_post")
+     * @Groups("Listitem_denormalization_put")
      */
     private $description;
 
@@ -80,14 +90,14 @@ class Position
         return $this;
     }
 
-    public function getItemList(): ?ItemList
+    public function getListitem(): ?Listitem
     {
-        return $this->itemList;
+        return $this->listitem;
     }
 
-    public function setItemList(?ItemList $itemList): self
+    public function setListitem(?Listitem $listitem): self
     {
-        $this->itemList = $itemList;
+        $this->listitem = $listitem;
 
         return $this;
     }

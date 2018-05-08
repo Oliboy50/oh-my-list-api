@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\ItemList;
+use App\Entity\Listitem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method ItemList|null find($id, $lockMode = null, $lockVersion = null)
- * @method ItemList|null findOneBy(array $criteria, array $orderBy = null)
- * @method ItemList[]    findAll()
- * @method ItemList[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Listitem|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Listitem|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Listitem[]    findAll()
+ * @method Listitem[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ItemListRepository extends ServiceEntityRepository
+class ListitemRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, ItemList::class);
+        parent::__construct($registry, Listitem::class);
     }
 
 //    /**
-//     * @return ItemList[] Returns an array of ItemList objects
+//     * @return Listitem[] Returns an array of Listitem objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class ItemListRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?ItemList
+    public function findOneBySomeField($value): ?Listitem
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.exampleField = :val')
