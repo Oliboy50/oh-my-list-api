@@ -43,6 +43,9 @@ class Item
      *
      * @Assert\NotBlank()
      *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $label;
@@ -50,6 +53,8 @@ class Item
     /**
      * @ORM\Column(type="text", nullable=true)
      *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $description;
@@ -57,12 +62,19 @@ class Item
     /**
      * @ORM\Column(type="string", length=510, nullable=true)
      *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $image;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="items")
+     *
+     * @Groups("Listitem_normalization_get")
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
      */
     private $tags;
 
@@ -74,6 +86,7 @@ class Item
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ItemUser", mappedBy="item", orphanRemoval=true, cascade={"persist"})
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $itemUsers;

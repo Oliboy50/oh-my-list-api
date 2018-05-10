@@ -12,10 +12,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  *   collectionOperations={
- *     "get"={"method"="GET"},
+ *     "get"={
+ *       "method"="GET",
+ *       "normalization_context"={"groups"={"Position_normalization_list"}},
+ *     },
  *   },
  *   itemOperations={
- *     "get"={"method"="GET"},
+ *     "get"={
+ *       "method"="GET",
+ *       "normalization_context"={"groups"={"Position_normalization_get"}},
+ *     },
  *   }
  * )
  *
@@ -41,6 +47,9 @@ class Position
      *
      * @Assert\NotNull()
      *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      * @Groups("Listitem_denormalization_put")
      */
@@ -51,6 +60,9 @@ class Position
      * @ORM\JoinColumn(nullable=false)
      *
      * @Assert\NotNull()
+     *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
      */
     private $listitem;
 
@@ -60,6 +72,9 @@ class Position
      * @Assert\NotBlank()
      * @Assert\GreaterThan(0)
      *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      * @Groups("Listitem_denormalization_put")
      */
@@ -68,6 +83,9 @@ class Position
     /**
      * @ORM\Column(type="text", nullable=true)
      *
+     * @Groups("Position_normalization_list")
+     * @Groups("Position_normalization_get")
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      * @Groups("Listitem_denormalization_put")
      */

@@ -47,6 +47,7 @@ class ItemUser
      *
      * @Assert\NotNull()
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $user;
@@ -57,6 +58,7 @@ class ItemUser
      * @Assert\NotBlank()
      * @Assert\GreaterThanOrEqual(0)
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $rating;

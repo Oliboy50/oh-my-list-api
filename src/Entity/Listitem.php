@@ -14,14 +14,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  *   collectionOperations={
- *     "get"={"method"="GET"},
+ *     "get"={
+ *       "method"="GET",
+ *     },
  *     "post"={
  *       "method"="POST",
  *       "denormalization_context"={"groups"={"Listitem_denormalization_post"}},
  *     },
  *   },
  *   itemOperations={
- *     "get"={"method"="GET"},
+ *     "get"={
+ *       "method"="GET",
+ *       "normalization_context"={"groups"={"Listitem_normalization_get"}},
+ *     },
  *     "put"={
  *       "method"="PUT",
  *       "denormalization_context"={"groups"={"Listitem_denormalization_put"}},
@@ -49,6 +54,7 @@ class Listitem
      *
      * @Assert\NotBlank()
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      * @Groups("Listitem_denormalization_put")
      */
@@ -57,6 +63,7 @@ class Listitem
     /**
      * @ORM\Column(type="text", nullable=true)
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      * @Groups("Listitem_denormalization_put")
      */
@@ -64,12 +71,15 @@ class Listitem
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="listitems")
+     *
+     * @Groups("Listitem_normalization_get")
      */
     private $tags;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="listitem", orphanRemoval=true, cascade={"persist"})
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      * @Groups("Listitem_denormalization_put")
      */
@@ -79,6 +89,7 @@ class Listitem
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="listitems")
      * @ORM\JoinColumn(nullable=false)
      *
+     * @Groups("Listitem_normalization_get")
      * @Groups("Listitem_denormalization_post")
      */
     private $owner;
